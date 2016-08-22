@@ -14,7 +14,7 @@ namespace TextTerminator
     class Program
     {
 
-        static string input;                    
+        static string input;
 
         static void OnClose(object sender, EventArgs e)
         {
@@ -27,20 +27,36 @@ namespace TextTerminator
         static void Main(string[] args)
         {
             RenderWindow window = new RenderWindow(new VideoMode(800, 600), "test");
+            Font font = new Font("arial.ttf");
             
             // Eventhandler
             window.Closed += OnClose;
             window.TextEntered += OnTextEntered;
+            window.KeyPressed += OnKeyPressed;
 
             while (window.IsOpen)
             {
                 // Verarbeite Eingaben
                 window.DispatchEvents();
-                
+
                 // Clear Display
                 window.Clear();
+
+                // Show Text
+                Text text = new Text(input, font, 50);
+                window.Draw(text);
+
                 // Render
                 window.Display();
+            }
+        }
+
+        private static void OnKeyPressed(object sender, KeyEventArgs e)
+        {
+            if (e.Code == Keyboard.Key.BackSpace)
+            {
+                input = input.Substring(1, input.Length - 1);
+                Console.WriteLine(input);
             }
         }
 
@@ -48,7 +64,8 @@ namespace TextTerminator
         {
             input += e.Unicode;
             Console.WriteLine(input);
-        }
         
+        }
+
     }
 }
