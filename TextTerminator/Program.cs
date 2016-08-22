@@ -30,7 +30,7 @@ namespace TextTerminator
             
             // Eventhandler
             window.Closed += OnClose;
-            window.KeyPressed += OnKeyPressed;
+            window.TextEntered += OnTextEntered;
 
             while (window.IsOpen)
             {
@@ -44,19 +44,11 @@ namespace TextTerminator
             }
         }
 
-        private static void OnKeyPressed(object sender, KeyEventArgs e)
+        private static void OnTextEntered(object sender, TextEventArgs e)
         {
-   
-            if (e.Shift)
-            {
-                input += e.Code.ToString().ToUpper();
-            }
-            else
-            {
-                input += e.Code.ToString().ToLower();
-            }
-
+            input += e.Unicode;
             Console.WriteLine(input);
         }
+        
     }
 }
