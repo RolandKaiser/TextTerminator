@@ -46,11 +46,7 @@ namespace TextTerminator
 
         private static void OnKeyPressed(object sender, KeyEventArgs e)
         {
-            if (e.Code.ToString().
-            { 
-                return;
-            }
-
+   
             if (e.Shift)
             {
                 input += e.Code.ToString().ToUpper();
