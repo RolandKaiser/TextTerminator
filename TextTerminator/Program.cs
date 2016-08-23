@@ -15,6 +15,7 @@ namespace TextTerminator
     {
 
         static string input;
+        
 
         static void OnClose(object sender, EventArgs e)
         {
@@ -28,7 +29,36 @@ namespace TextTerminator
         {
             RenderWindow window = new RenderWindow(new VideoMode(800, 600), "test");
             Font font = new Font("arial.ttf");
-            
+
+            string[] words = { "Lorem", "Ipsum", "Ego", "Caprum", "Non", "Iam", "Habeo", "TextTerminator", "ContactDude", "Validation" };
+
+            List<Text> textobjects = new List<Text>();
+            Random rnd = new Random();
+
+            foreach (string word in words)
+            {
+                Text text = new Text(word, font, 50);
+                int x = rnd.Next(100);
+                int y = rnd.Next(100);
+                text.Position = new Vector2f(x, y);
+                FloatRect textrect = text.GetGlobalBounds();
+
+                foreach (Text textobject in textobjects)
+                {
+                    
+                    while (textrect.Intersects(textobject.GetGlobalBounds()))
+                    {
+                        x = rnd.Next(100);
+                        y = rnd.Next(100);
+                        text.Position = new Vector2f(x, y);
+                        textrect = text.GetGlobalBounds();
+                    }
+
+                }
+
+                textobjects.Add(text);
+            }
+
             // Eventhandler
             window.Closed += OnClose;
             window.TextEntered += OnTextEntered;
@@ -46,6 +76,11 @@ namespace TextTerminator
                 Text text = new Text(input, font, 50);
                 window.Draw(text);
 
+                foreach (Text item in textobjects)
+                {
+                    window.Draw(item);
+                }
+
                 // Render
                 window.Display();
             }
@@ -53,18 +88,27 @@ namespace TextTerminator
 
         private static void OnKeyPressed(object sender, KeyEventArgs e)
         {
-            if (e.Code == Keyboard.Key.BackSpace)
+            if (e.Code == Keyboard.Key.Escape)
             {
-                input = input.Substring(1, input.Length - 1);
-                Console.WriteLine(input);
+                RenderWindow window = (RenderWindow)sender;
+                window.Close();
             }
         }
 
         private static void OnTextEntered(object sender, TextEventArgs e)
         {
-            input += e.Unicode;
+            if (e.Unicode == "\b")
+            {
+                if (input.Length > 0)
+                {
+                    input = input.Substring(0, input.Length - 1);
+                }
+            }
+            else
+            { 
+                input += e.Unicode;
+            }
             Console.WriteLine(input);
-        
         }
 
     }
