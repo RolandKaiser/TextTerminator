@@ -32,6 +32,46 @@ namespace TextTerminator
 
             string[] words = { "Lorem", "Ipsum", "Ego", "Caprum", "Non", "Iam", "Habeo", "TextTerminator", "ContactDude", "Validation" };
 
+            // Unten stehender Code ist nicht funktionstüchtig und nur für Erklärungszwecke verwendet.
+            // Idee!    mit 2. Array arbeiten - immer 1. Element mit allen Elementen aus 2. Array vergleichen
+            //          Prüfung bestanden, dann Remove aus Array 1 und push into Array 2
+            //          Prüfung nicht bestanden, neu Berechnung und wieder mit allen Elementen aus A2 vergleichen
+
+            //Text[] textobjects = new Text[words.Length];
+            //Text[] textobjects2 = new Text[words.Length];
+            //Random rnd = new Random();
+
+            //for (int i = 0; i < words.Length -1 ; i++)
+            //{
+            //    Text text = new Text(words[i], font, 50);
+            //    int x = rnd.Next(100);
+            //    int y = rnd.Next(100);
+            //    text.Position = new Vector2f(x, y);
+            //    FloatRect textrect = text.GetGlobalBounds();
+            //    textobjects[i] = text;
+
+
+            //    for (int z = 1; z < textobjects2.Length -1; z++)
+            //    {
+            //        // Exception for null
+            //        if (!(textrect.Intersects(textobjects2[z].GetGlobalBounds())))
+            //        {
+            //            textobjects2[z] = text;
+            //            textobjects.ToList().RemoveAt(0);
+            //            textobjects.ToArray();
+            //        }
+            //        else
+            //        {
+            //            x = rnd.Next(100);
+            //            y = rnd.Next(100);
+            //            text.Position = new Vector2f(x, y);
+            //            textrect = text.GetGlobalBounds();
+            //        }
+            //    }
+
+            //}
+
+
             List<Text> textobjects = new List<Text>();
             Random rnd = new Random();
 
@@ -45,7 +85,7 @@ namespace TextTerminator
 
                 foreach (Text textobject in textobjects)
                 {
-                    
+
                     while (textrect.Intersects(textobject.GetGlobalBounds()))
                     {
                         x = rnd.Next(100);
