@@ -24,6 +24,25 @@ namespace TextTerminator
             window.Close();
         }
 
+        static List<Text> BuildTextCollection(string[] words, Font font)
+        {
+
+            List<Text> textobjects = new List<Text>();
+            Random rnd = new Random();
+
+            foreach (string word in words)
+            {
+                Text text = new Text(word, font, 50);
+                int x = rnd.Next(300);
+                int y = rnd.Next(400);
+                text.Position = new Vector2f(x, y);
+                textobjects.Add(text);
+            }
+
+            return textobjects;
+
+        }
+
         // static = Klassenmethode, Typ muss angegeben werden, Main required
         static void Main(string[] args)
         {
@@ -33,70 +52,49 @@ namespace TextTerminator
             string[] words = { "Lorem", "Ipsum", "Ego", "Caprum", "Non", "Iam", "Habeo", "TextTerminator", "ContactDude", "Validation" };
 
             // Unten stehender Code ist nicht funktionstüchtig und nur für Erklärungszwecke verwendet.
-            // Idee!    mit 2. Array arbeiten - immer 1. Element mit allen Elementen aus 2. Array vergleichen
-            //          Prüfung bestanden, dann Remove aus Array 1 und push into Array 2
-            //          Prüfung nicht bestanden, neu Berechnung und wieder mit allen Elementen aus A2 vergleichen
+            // Idee!    mit 2. Collection arbeiten - solange das betrachtete Element aus 1. Cl mit allen Elementen aus 2. Collection vergleichen
+            //          Prüfung bestanden (schneiden sich nicht), dann push into Collection 2
+            //          Prüfung nicht bestanden, neu Berechnung und wieder mit allen Elementen aus C2 vergleichen
 
-            //Text[] textobjects = new Text[words.Length];
-            //Text[] textobjects2 = new Text[words.Length];
-            //Random rnd = new Random();
-
-            //for (int i = 0; i < words.Length -1 ; i++)
-            //{
-            //    Text text = new Text(words[i], font, 50);
-            //    int x = rnd.Next(100);
-            //    int y = rnd.Next(100);
-            //    text.Position = new Vector2f(x, y);
-            //    FloatRect textrect = text.GetGlobalBounds();
-            //    textobjects[i] = text;
-
-
-            //    for (int z = 1; z < textobjects2.Length -1; z++)
-            //    {
-            //        // Exception for null
-            //        if (!(textrect.Intersects(textobjects2[z].GetGlobalBounds())))
-            //        {
-            //            textobjects2[z] = text;
-            //            textobjects.ToList().RemoveAt(0);
-            //            textobjects.ToArray();
-            //        }
-            //        else
-            //        {
-            //            x = rnd.Next(100);
-            //            y = rnd.Next(100);
-            //            text.Position = new Vector2f(x, y);
-            //            textrect = text.GetGlobalBounds();
-            //        }
-            //    }
-
-            //}
-
-
-            List<Text> textobjects = new List<Text>();
+            
+            List<Text> textobjects2 = new List<Text>();
+            List<Text> textobjects = BuildTextCollection(words, font);
             Random rnd = new Random();
 
-            foreach (string word in words)
+            foreach (Text textobject in textobjects)
             {
-                Text text = new Text(word, font, 50);
-                int x = rnd.Next(100);
-                int y = rnd.Next(100);
-                text.Position = new Vector2f(x, y);
-                FloatRect textrect = text.GetGlobalBounds();
 
-                foreach (Text textobject in textobjects)
+                FloatRect textrect = textobject.GetGlobalBounds();
+
+                bool intersects = true;
+
+                while (intersects)
                 {
-
-                    while (textrect.Intersects(textobject.GetGlobalBounds()))
+                    foreach (Text textobject2 in textobjects2)
                     {
-                        x = rnd.Next(100);
-                        y = rnd.Next(100);
-                        text.Position = new Vector2f(x, y);
-                        textrect = text.GetGlobalBounds();
+                        if (!(textrect.Intersects(textobject2.GetGlobalBounds())))
+                        {
+                            intersects = false;
+                        }
+                        else
+                        {
+                            int x = rnd.Next(300);
+                            int y = rnd.Next(400);
+                            textobject.Position = new Vector2f(x, y);
+                            textrect = textobject.GetGlobalBounds();
+                            intersects = true;
+                            break;
+
+                        }
                     }
 
+                    if ((!intersects) || (textobjects2.Count == 0))
+                    {
+                        textobjects2.Add(textobject);
+                        intersects = false;
+                    }
+                                         
                 }
-
-                textobjects.Add(text);
             }
 
             // Eventhandler
@@ -116,7 +114,7 @@ namespace TextTerminator
                 Text text = new Text(input, font, 50);
                 window.Draw(text);
 
-                foreach (Text item in textobjects)
+                foreach (Text item in textobjects2)
                 {
                     window.Draw(item);
                 }
