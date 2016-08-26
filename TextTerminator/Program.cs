@@ -15,7 +15,9 @@ namespace TextTerminator
     {
 
         static string input;
-        
+        const int WINDOW_WIDTH = 800;
+        const int WINDOW_HEIGHT = 600;
+
 
         static void OnClose(object sender, EventArgs e)
         {
@@ -33,9 +35,7 @@ namespace TextTerminator
             foreach (string word in words)
             {
                 Text text = new Text(word, font, 50);
-                int x = rnd.Next(300);
-                int y = rnd.Next(400);
-                text.Position = new Vector2f(x, y);
+                setNewItemPosition(rnd, text);
                 textobjects.Add(text);
             }
 
@@ -43,20 +43,32 @@ namespace TextTerminator
 
         }
 
+        static bool checkWindowBorderCollision(Random rnd, Text item, RenderWindow window)
+        {
+            bool WindowBorderCollision = false;
+                     
+            if ((item.GetGlobalBounds().Left + item.GetGlobalBounds().Width) > WINDOW_WIDTH) { WindowBorderCollision = true; }
+            if ((item.GetGlobalBounds().Top + item.GetGlobalBounds().Height) > WINDOW_HEIGHT) { WindowBorderCollision = true; }
+
+            return WindowBorderCollision;
+        }
+
+        static void setNewItemPosition(Random rnd, Text item)
+        {
+            int x = rnd.Next(WINDOW_WIDTH);
+            int y = rnd.Next(WINDOW_HEIGHT);
+            item.Position = new Vector2f(x, y);
+        }
+
         // static = Klassenmethode, Typ muss angegeben werden, Main required
         static void Main(string[] args)
         {
-            RenderWindow window = new RenderWindow(new VideoMode(800, 600), "test");
+
+            RenderWindow window = new RenderWindow(new VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "test");
             Font font = new Font("arial.ttf");
 
             string[] words = { "Lorem", "Ipsum", "Ego", "Caprum", "Non", "Iam", "Habeo", "TextTerminator", "ContactDude", "Validation" };
 
-            // Unten stehender Code ist nicht funktionstüchtig und nur für Erklärungszwecke verwendet.
-            // Idee!    mit 2. Collection arbeiten - solange das betrachtete Element aus 1. Cl mit allen Elementen aus 2. Collection vergleichen
-            //          Prüfung bestanden (schneiden sich nicht), dann push into Collection 2
-            //          Prüfung nicht bestanden, neu Berechnung und wieder mit allen Elementen aus C2 vergleichen
-
-            
             List<Text> textobjects2 = new List<Text>();
             List<Text> textobjects = BuildTextCollection(words, font);
             Random rnd = new Random();
@@ -65,26 +77,22 @@ namespace TextTerminator
             {
 
                 FloatRect textrect = textobject.GetGlobalBounds();
-
                 bool intersects = true;
 
                 while (intersects)
                 {
                     foreach (Text textobject2 in textobjects2)
                     {
-                        if (!(textrect.Intersects(textobject2.GetGlobalBounds())))
+                        if (!(textrect.Intersects(textobject2.GetGlobalBounds())) && (!(checkWindowBorderCollision(rnd, textobject, window))))
                         {
                             intersects = false;
                         }
                         else
                         {
-                            int x = rnd.Next(300);
-                            int y = rnd.Next(400);
-                            textobject.Position = new Vector2f(x, y);
+                            setNewItemPosition(rnd, textobject);
                             textrect = textobject.GetGlobalBounds();
                             intersects = true;
                             break;
-
                         }
                     }
 
@@ -116,7 +124,7 @@ namespace TextTerminator
 
                 foreach (Text item in textobjects2)
                 {
-                    window.Draw(item);
+                   window.Draw(item);                   
                 }
 
                 // Render
